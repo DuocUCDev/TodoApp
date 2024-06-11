@@ -26,7 +26,7 @@
                     <a class="nav-link" href="subscribe.html">Subscribe</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login.html">Login</a>
+                    <a class="nav-link" href="login.html">Logout</a>
                 </li>
             </ul>
         </div>
@@ -36,14 +36,7 @@
     <div class="container mt-5">
         <h2 class="text-center">Subscribe</h2>
         <form id="subscribeForm" class="mt-4">
-            <div class="form-group">
-                <label for="subscriptionType">Select Subscription Plan</label>
-                <select class="form-control" id="subscriptionType" name="subscriptionType">
-                    <option value="monthly">Monthly - $10</option>
-                    <option value="yearly">Yearly - $100</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Subscribe</button>
+            <button type="submit" class="btn btn-primary btn-block">Subscribe for $10/month</button>
         </form>
     </div>
 
@@ -56,6 +49,32 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
-    <script src="../js/scripts.js"></script>
+    <script src="../js/subscribe.js"></script>
+    <script>
+        function refreshToken(callback) {
+            var refresh = localStorage.getItem('refresh');
+            if (refresh) {
+                $.ajax({
+                    url: "http://localhost:8000/api/token/refresh/",
+                    type: "POST",
+                    data: JSON.stringify({ refresh: refresh }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        localStorage.setItem('access', response.access);
+                        if (callback) callback();
+                    },
+                    error: function (response) {
+                        alert("Session expired. Please log in again.");
+                        localStorage.removeItem('access');
+                        localStorage.removeItem('refresh');
+                        window.location.href = "login.html";
+                    }
+                });
+            } else {
+                alert("No refresh token available. Please log in again.");
+                window.location.href = "login.html";
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,16 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Create your models here.
 class Subscription(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
-    
+
     @property
     def is_active(self):
-        return self.end_date > datetime.now()
+        return self.end_date > timezone.now()
     
 
 class Task(models.Model):
